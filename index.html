@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Stopwatch</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			body {
+				font-family: "Roboto", sans-serif;
+				background-color: #050404;
+				color: aliceblue;
+			}
+			.container {
+				width: 100%;
+				height: 100vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-top: 10%;
+			}
+
+			.display {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+
+			/* Time */
+			.time {
+				font-size: 5rem;
+				font-weight: bold;
+				margin-bottom: 20px;
+				color: rgba(255, 202, 202, 0.8);
+			}
+
+			.laps {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				margin-top: 20px;
+			}
+			.laps p {
+				font-size: 1.5rem;
+				font-weight: bold;
+				margin-bottom: 10px;
+				color: rgba(255, 202, 202, 0.8);
+			}
+
+			/* Buttons */
+			.btn {
+				padding: 20px 20px;
+				border: none;
+				border-radius: 100%;
+				height: 90px;
+				width: 90px;
+				margin: 5px;
+				cursor: pointer;
+				font-size: 1rem;
+				font-weight: bold;
+				color: red;
+				background-color: rgba(255, 0, 0, 0.2);
+			}
+			.strB {
+				color: green;
+				background-color: rgba(0, 255, 0, 0.2);
+			}
+			.lapB {
+				color: blue;
+				background-color: rgba(0, 0, 255, 0.2);
+				display: none;
+			}
+			.rstB {
+				color: red;
+				background-color: rgba(255, 0, 0, 0.2);
+			}
+			.btn:hover {
+				background-color: rgba(255, 255, 255, 0.2);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="stopwatch">
+				<div class="display">
+					<h1 class="time" id="time">00:00:00</h1>
+					<div class="buttons">
+						<button class="btn strB">Start</button>
+						<button class="btn lapB">Lap</button>
+						<button class="btn rstB">Reset</button>
+					</div>
+				</div>
+			</div>
+			<div class="laps" id="lapList"></div>
+		</div>
+		<script>
+			const time = document.getElementById("time");
+			const startBtn = document.querySelector(".strB");
+			const lapBtn = document.querySelector(".lapB");
+			const resetBtn = document.querySelector(".rstB");
+			const lapList = document.getElementById("lapList");
+			let timerTime = 0;
+			let timer;
+			let lapCount = 0;
+			let lapTime = 0;
+			let lapTimer;
+
+			//On Start Button Click
+			startBtn.addEventListener("click", () => {
+				startBtn.style.display = "none";
+				lapBtn.style.display = "inline-block";
+				lapTimer = setInterval(() => {
+					lapTime++;
+				}, 10);
+				timer = setInterval(() => {
+					timerTime++;
+					let min = Math.floor(timerTime / 100 / 60);
+					let sec = Math.floor(timerTime / 100);
+					let mSec = timerTime % 100;
+					if (min < 10) {
+						min = "0" + min;
+					}
+					if (sec >= 60) {
+						sec = sec % 60;
+					}
+					if (sec < 10) {
+						sec = "0" + sec;
+					}
+					if (mSec < 10) {
+						mSec = "0" + mSec;
+					}
+					time.innerHTML = `${min}:${sec}:${mSec}`;
+				}, 10);
+			});
+
+			//On Lap Button Click
+			lapBtn.addEventListener("click", () => {
+				lapCount++;
+				let min = Math.floor(lapTime / 100 / 60);
+				let sec = Math.floor(lapTime / 100);
+				let mSec = lapTime % 100;
+				if (min < 10) {
+					min = "0" + min;
+				}
+				if (sec >= 60) {
+					sec = sec % 60;
+				}
+				if (sec < 10) {
+					sec = "0" + sec;
+				}
+				if (mSec < 10) {
+					mSec = "0" + mSec;
+				}
+				lapList.innerHTML += `<p>Lap ${lapCount} : ${min}:${sec}:${mSec}</p>`;
+				lapTime = 0;
+			});
+
+			//On Reset Button Click
+			resetBtn.addEventListener("click", () => {
+				startBtn.style.display = "inline-block";
+				lapBtn.style.display = "none";
+				lapList.innerHTML = "";
+				timerTime = 0;
+				lapCount = 0;
+				lapTime = 0;
+				clearInterval(timer);
+				clearInterval(lapTimer);
+				time.innerHTML = "00:00:00";
+			});
+		</script>
+	</body>
+</html>
